@@ -209,10 +209,9 @@ int main() {
         printf("5. Delete from end\n");
         printf("6. Delete at position\n");
         printf("7. Search\n");
-        printf("8. Count nodes\n");
-        printf("9. Reverse list\n");
-        printf("10. Display\n");
-        printf("11. Exit\n");
+        printf("8. Reverse list\n");
+        printf("9. Display\n");
+        printf("10. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
@@ -248,23 +247,21 @@ int main() {
                 scanf("%d", &value);
                 search(value);
                 break;
+          
             case 8:
-                countNodes();
-                break;
-            case 9:
                 reverseList();
                 break;
-            case 10:
+            case 9:
                 display();
                 break;
-            case 11:
+            case 10:
                 printf("Exiting...\n");
                 break;
             default:
                 printf("Invalid choice. Try again.\n");
         }
 
-    } while (choice != 11);
+    } while (choice != 10);
 
     return 0;
 }
