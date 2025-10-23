@@ -1,0 +1,140 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node {
+    int data;
+    struct node *left, *right;
+};
+
+// Function to create a new node
+struct node* newNode(int value) {
+    struct node* temp = (struct node*)malloc(sizeof(struct node));
+    temp->data = value;
+    temp->left = temp->right = NULL;
+    return temp;
+}
+
+// Insert a node into the BST
+struct node* insert(struct node* root, int value) {
+    if (root == NULL)
+        return newNode(value);
+
+    if (value < root->data)
+        root->left = insert(root->left, value);
+    else if (value > root->data)
+        root->right = insert(root->right, value);
+
+    return root;
+}
+
+// Search for a value in the BST
+struct node* search(struct node* root, int key) {
+    if (root == NULL || root->data == key)
+        return root;
+
+    if (key < root->data)
+        return search(root->left, key);
+    else
+        return search(root->right, key);
+}
+
+// Inorder traversal (Left, Root, Right)
+void inorder(struct node* root) {
+    if (root != NULL) {
+        inorder(root->left);
+        printf("%d ", root->data);
+        inorder(root->right);
+    }
+}
+
+// Preorder traversal (Root, Left, Right)
+void preorder(struct node* root) {
+    if (root != NULL) {
+        printf("%d ", root->data);
+        preorder(root->left);
+        preorder(root->right);
+    }
+}
+
+// Postorder traversal (Left, Right, Root)
+void postorder(struct node* root) {
+    if (root != NULL) {
+        postorder(root->left);
+        postorder(root->right);
+        printf("%d ", root->data);
+    }
+}
+
+// Free the tree to avoid memory leaks
+void freeTree(struct node* root) {
+    if (root != NULL) {
+        freeTree(root->left);
+        freeTree(root->right);
+        free(root);
+    }
+}
+
+int main() {
+    struct node* root = NULL;
+    int choice, value;
+    struct node* result;
+
+    while (1) {
+        printf("\n==== Binary Search Tree Menu ====\n");
+        printf("1. Insert\n");
+        printf("2. Search\n");
+        printf("3. Inorder Traversal\n");
+        printf("4. Preorder Traversal\n");
+        printf("5. Postorder Traversal\n");
+        printf("6. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+        case 1:
+            printf("Enter value to insert: ");
+            scanf("%d", &value);
+            root = insert(root, value);
+            printf("%d inserted successfully!\n", value);
+            break;
+
+        case 2:
+            printf("Enter value to search: ");
+            scanf("%d", &value);
+            result = search(root, value);
+            if (result != NULL)
+                printf("%d found in the BST.\n", value);
+            else
+                printf("%d not found in the BST.\n", value);
+            break;
+
+        case 3:
+            printf("Inorder traversal: ");
+            inorder(root);
+            printf("\n");
+            break;
+
+        case 4:
+            printf("Preorder traversal: ");
+            preorder(root);
+            printf("\n");
+            break;
+
+        case 5:
+            printf("Postorder traversal: ");
+            postorder(root);
+            printf("\n");
+            break;
+
+        case 6:
+            printf("Exiting... freeing memory.\n");
+            freeTree(root);
+            exit(0);
+
+        default:
+            printf("Invalid choice! Please try again.\n");
+        }
+    }
+
+    return 0;
+}
