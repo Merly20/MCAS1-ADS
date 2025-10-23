@@ -31,14 +31,49 @@ struct node* insert(struct node* root, int value) {
 struct node* search(struct node* root, int key) {
     if (root == NULL || root->data == key)
         return root;
-
     if (key < root->data)
         return search(root->left, key);
     else
         return search(root->right, key);
 }
 
-// Inorder traversal (Left, Root, Right)
+// Find the smallest node (used in deletion)
+struct node* findMin(struct node* root) {
+    while (root && root->left != NULL)
+        root = root->left;
+    return root;
+}
+
+// Delete a node from the BST
+struct node* deleteNode(struct node* root, int key) {
+    if (root == NULL)
+        return root;
+
+    if (key < root->data)
+        root->left = deleteNode(root->left, key);
+    else if (key > root->data)
+        root->right = deleteNode(root->right, key);
+    else {
+        // Node found
+        if (root->left == NULL) {
+            struct node* temp = root->right;
+            free(root);
+            return temp;
+        } else if (root->right == NULL) {
+            struct node* temp = root->left;
+            free(root);
+            return temp;
+        }
+
+        // Node with two children
+        struct node* temp = findMin(root->right);
+        root->data = temp->data;
+        root->right = deleteNode(root->right, temp->data);
+    }
+    return root;
+}
+
+// Traversals
 void inorder(struct node* root) {
     if (root != NULL) {
         inorder(root->left);
@@ -47,7 +82,6 @@ void inorder(struct node* root) {
     }
 }
 
-// Preorder traversal (Root, Left, Right)
 void preorder(struct node* root) {
     if (root != NULL) {
         printf("%d ", root->data);
@@ -56,7 +90,6 @@ void preorder(struct node* root) {
     }
 }
 
-// Postorder traversal (Left, Right, Root)
 void postorder(struct node* root) {
     if (root != NULL) {
         postorder(root->left);
@@ -65,7 +98,7 @@ void postorder(struct node* root) {
     }
 }
 
-// Free the tree to avoid memory leaks
+// Free all nodes
 void freeTree(struct node* root) {
     if (root != NULL) {
         freeTree(root->left);
@@ -86,7 +119,8 @@ int main() {
         printf("3. Inorder Traversal\n");
         printf("4. Preorder Traversal\n");
         printf("5. Postorder Traversal\n");
-        printf("6. Exit\n");
+        printf("6. Delete Node\n");
+        printf("7. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
@@ -127,6 +161,18 @@ int main() {
             break;
 
         case 6:
+            printf("Enter value to delete: ");
+            scanf("%d", &value);
+            result = search(root, value); // check first
+            if (result == NULL)
+                printf("%d not found in the BST. Cannot delete.\n", value);
+            else {
+                root = deleteNode(root, value);
+                printf("%d deleted successfully!\n", value);
+            }
+            break;
+
+        case 7:
             printf("Exiting... freeing memory.\n");
             freeTree(root);
             exit(0);
@@ -135,6 +181,5 @@ int main() {
             printf("Invalid choice! Please try again.\n");
         }
     }
-
     return 0;
 }
